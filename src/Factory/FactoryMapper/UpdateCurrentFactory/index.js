@@ -9,12 +9,23 @@ import DialogContentText from '@material-ui/core/DialogContentText'
 import DialogTitle from '@material-ui/core/DialogTitle'
 import Button from '@material-ui/core/Button'
 
-import TextFields from '../TextFields'
+import TextFields from '../../TextFields'
 
-class FactoryMenu extends Component {
+class UpdateCurrentFactory extends Component {
   state = {
-    subMenuOpen: false
+    subMenuOpen: false,
+    currentFactory: {}
   }
+
+  componentWillReceiveProps (props) {
+    const incomingFactory = Object.assign(this.state.currentFactory, props.item)
+    this.setState({ currentFactory: incomingFactory })
+  }
+
+  handleNewFactory = hubType => {
+    this.props.updateFactory(hubType, this.state.currentFactory._id)
+  }
+
   handleSubMenuOpen = () => {
     this.setState({ subMenuOpen: true })
   }
@@ -25,12 +36,14 @@ class FactoryMenu extends Component {
     const {
       item,
       anchor,
-      updateFactory,
+      removeFactory,
+      handleTextInput,
       handleClose,
-      removeFactory
+      handleChildrenInput,
+      handleLowerBound,
+      handleUpperBound,
+      validationValues
     } = this.props
-
-    console.log(item)
     return (
       <div>
         <Menu
@@ -39,7 +52,6 @@ class FactoryMenu extends Component {
           open={Boolean(anchor)}
           onClose={handleClose}
         >
-          {/* {console.log('factory menu Component', item)} */}
           <MenuItem
             onClick={() => {
               removeFactory(item._id)
@@ -67,13 +79,26 @@ class FactoryMenu extends Component {
             {/* <DialogContentText>
               Enter a name, amount of children, upperBound, and lowerBound
             </DialogContentText> */}
-            <TextFields />
+            <TextFields
+              validationValues={validationValues}
+              handleTextInput={handleTextInput}
+              handleChildrenInput={handleChildrenInput}
+              handleLowerBound={handleLowerBound}
+              handleUpperBound={handleUpperBound}
+              item={item}
+            />
           </DialogContent>
           <DialogActions>
             <Button color='primary'>
               Cancel
             </Button>
-            <Button color='primary' onClick={this.handleSubMenuClose}>
+            <Button
+              color='primary'
+              onClick={() => {
+                this.handleSubMenuClose()
+                this.handleNewFactory('updateHub')
+              }}
+            >
               Submit
             </Button>
           </DialogActions>
@@ -82,4 +107,4 @@ class FactoryMenu extends Component {
     )
   }
 }
-export default FactoryMenu
+export default UpdateCurrentFactory

@@ -2,8 +2,8 @@ import React, { Component } from 'react'
 import styled from 'styled-components'
 import { withStyles } from '@material-ui/core/styles'
 import Button from '@material-ui/core/Button'
-import socket from '../socket'
-import FactoryMenu from './FactoryMenu'
+import socket from '../../socket'
+import UpdateCurrentFactory from './UpdateCurrentFactory'
 const styles = theme => ({
   button: {
     margin: theme.spacing.unit
@@ -12,7 +12,7 @@ const styles = theme => ({
     display: 'none'
   }
 })
-class FactoryGeneration extends Component {
+class FactoryMapper extends Component {
   state = {
     anchor: null,
     textInput: '',
@@ -30,15 +30,18 @@ class FactoryGeneration extends Component {
   removeFactory = id => {
     socket.emit('removeFactory', id)
   }
-  updateFactory = _id => {
-    const newChanges = {
-      name: this.state.textInput
-    }
-    const newFactory = Object.assign({}, this.state.currentFactory)
-    socket.emit('updateFactory', newFactory)
-  }
+
   render () {
-    const { factories, classes } = this.props
+    const {
+      factories,
+      classes,
+      handleTextInput,
+      handleChildrenInput,
+      handleLowerBound,
+      handleUpperBound,
+      validationValues,
+      updateFactory
+    } = this.props
     // console.log('Factory generator component: ', this.state.currentFactory)
     return (
       /**
@@ -73,12 +76,18 @@ class FactoryGeneration extends Component {
                   </li>
                 </ul>
               </div>
-              <FactoryMenu
+              <UpdateCurrentFactory
                 item={this.state.currentFactory}
                 anchor={this.state.anchor}
-                updateFactory={this.updateFactory}
-                handleClose={this.handleClose}
                 removeFactory={this.removeFactory}
+                handleClose={this.handleClose}
+                /** Handlers passed as props again */
+                handleTextInput={handleTextInput}
+                handleChildrenInput={handleChildrenInput}
+                handleLowerBound={handleLowerBound}
+                handleUpperBound={handleUpperBound}
+                validationValues={validationValues}
+                updateFactory={updateFactory}
               />
             </React.Fragment>
           ))}
@@ -98,4 +107,4 @@ const Wrapper = styled.div`
     }
   }
 `
-export default withStyles(styles)(FactoryGeneration)
+export default withStyles(styles)(FactoryMapper)

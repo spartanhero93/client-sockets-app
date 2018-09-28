@@ -3,17 +3,7 @@ import styled from 'styled-components'
 import Button from '@material-ui/core/Button'
 
 import socket from './socket'
-import CreateNewFactory from './Factory/CreateNewFactory'
-import Generator from './Factory/Generator'
-
-// const styles = theme => ({
-//   button: {
-//     margin: theme.spacing.unit
-//   },
-//   input: {
-//     display: 'none'
-//   }
-// })
+import Root from './Factory'
 
 class App extends Component {
   state = {
@@ -35,8 +25,16 @@ class App extends Component {
       this.setState({ factories: [...this.state.factories, response] })
     })
     socket.on('updateFactory', response => {
-      console.log('factory was updated ', response)
+      const allFactories = this.state.factories
+      this.setState({
+        factories: allFactories.splice(
+          allFactories.findIndex(target => target._id === response._id),
+          1,
+          response
+        )
+      })
     })
+    socket.on('Error', response => console.log(response))
   }
   handleClickOpen = () => {
     this.setState({ dialogOpen: true })
@@ -45,7 +43,6 @@ class App extends Component {
     this.setState({ dialogOpen: false })
   }
   render () {
-    // const { classes } = this.props
     return (
       <Wrapper>
         <Button
@@ -56,11 +53,11 @@ class App extends Component {
         >
           New Factory
         </Button>
-        <CreateNewFactory
+        <Root
           dialogOpen={this.state.dialogOpen}
           handleClose={this.handleClose}
+          factories={this.state.factories}
         />
-        <Generator factories={this.state.factories} />
       </Wrapper>
     )
   }

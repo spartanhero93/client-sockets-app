@@ -6,7 +6,8 @@ class TextFields extends Component {
 
   render () {
     const {
-      currentState,
+      item,
+      validationValues,
       handleTextInput,
       handleChildrenInput,
       handleLowerBound,
@@ -25,15 +26,16 @@ class TextFields extends Component {
           onChange={handleTextInput}
         />
         <TextField
-          error={!currentState.isNumOfChildrenValid}
+          autoFocus
+          error={!validationValues.isNumOfChildrenValid}
           id='standard-number'
           label={
-            currentState.isNumOfChildrenValid
+            validationValues.isNumOfChildrenValid
               ? 'Number of children'
               : 'Children value must be at least 0 and at most 15'
           }
           margin='normal'
-          value={currentState.numberOfChildren}
+          value={validationValues.numberOfChildren}
           onChange={handleChildrenInput}
           type='number'
           fullWidth
@@ -44,14 +46,15 @@ class TextFields extends Component {
         />
 
         <TextField
-          error={!currentState.isLowerBoundValid}
+          error={!validationValues.isLowerBoundValid}
           label={
-            currentState.isLowerBoundValid
+            validationValues.isLowerBoundValid
               ? 'LowerBound'
-              : `Value must be positive number, at least 0 and less than ${currentState.upperBound}`
+              : `Value must be positive number, at least 0 and less than ${validationValues.upperBound}`
           }
           id='standard-number'
           margin='normal'
+          value={validationValues.lowerBound}
           onChange={handleLowerBound}
           type='number'
           fullWidth
@@ -60,20 +63,21 @@ class TextFields extends Component {
           }}
           inputProps={{
             min: 0,
-            max: currentState.upperBound,
+            max: validationValues.upperBound,
             step: 1
           }}
           placeholder='0'
         />
         <TextField
-          error={!currentState.isUpperBoundValid}
+          error={!validationValues.isUpperBoundValid}
           label={
-            currentState.isUpperBoundValid
+            validationValues.isUpperBoundValid
               ? 'UpperBound'
-              : `value must be positive, higher than ${currentState.lowerBound} and less than 10000`
+              : `value must be positive, higher than ${validationValues.lowerBound} and less than 10000`
           }
           id='standard-number'
           margin='normal'
+          value={validationValues.upperBound}
           onChange={handleUpperBound}
           type='number'
           fullWidth
@@ -81,7 +85,7 @@ class TextFields extends Component {
             shrink: true
           }}
           inputProps={{
-            min: currentState.lowerBound,
+            min: validationValues.lowerBound,
             max: 10000,
             step: 1
           }}

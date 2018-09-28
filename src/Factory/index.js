@@ -5,10 +5,13 @@ import DialogActions from '@material-ui/core/DialogActions'
 import DialogContent from '@material-ui/core/DialogContent'
 import DialogContentText from '@material-ui/core/DialogContentText'
 import DialogTitle from '@material-ui/core/DialogTitle'
-import { generateRandomChildren, validateLowerBound } from './helpers'
+
+import { generateRandomChildren, isFactoryReady } from './helpers'
 import socket from '../socket'
+import FactoryMapper from './FactoryMapper'
 import TextFields from './TextFields'
-class CreateNewFactory extends Component {
+
+class Root extends Component {
   state = {
     currentText: '',
     numberOfChildren: 0,
@@ -62,8 +65,9 @@ class CreateNewFactory extends Component {
       isLowerBoundValid: true
     })
   }
-  addFactory = () => {
+  addFactory = (hubType, _id) => {
     const {
+      currentText,
       lowerBound,
       upperBound,
       numberOfChildren,
@@ -72,7 +76,12 @@ class CreateNewFactory extends Component {
       isUpperBoundValid
     } = this.state
 
-    if (!isLowerBoundValid || !isUpperBoundValid || !isNumOfChildrenValid) {
+    if (
+      !isLowerBoundValid ||
+      !isUpperBoundValid ||
+      !isNumOfChildrenValid ||
+      !currentText
+    ) {
       alert('Please check your values')
       this.setState({
         numberOfChildren: 0,
@@ -81,19 +90,30 @@ class CreateNewFactory extends Component {
         children: []
       })
     } else {
-      const randomArray = generateRandomChildren(
+      const newChildren = generateRandomChildren(
         numberOfChildren,
         lowerBound,
         upperBound
       )
 
-      socket.emit('addFactory', {
-        name: this.state.currentText,
-        numberOfChildren,
-        upperBound,
-        lowerBound,
-        children: randomArray
-      })
+      if (hubType == 'addMain') {
+        socket.emit('addFactory', {
+          name: this.state.currentText,
+          numberOfChildren,
+          upperBound,
+          lowerBound,
+          children: newChildren
+        })
+      } else if (hubType == 'updateHub') {
+        socket.emit('updateFactory', {
+          name: this.state.currentText,
+          numberOfChildren,
+          upperBound,
+          lowerBound,
+          children: newChildren,
+          _id
+        })
+      }
 
       this.setState({
         numberOfChildren: 0,
@@ -107,6 +127,16 @@ class CreateNewFactory extends Component {
   render () {
     return (
       <div>
+        <FactoryMapper
+          factories={this.props.factories}
+          handleTextInput={this.handleTextInput}
+          handleChildrenInput={this.handleChildrenInput}
+          handleLowerBound={this.handleLowerBound}
+          handleUpperBound={this.handleUpperBound}
+          validationValues={this.state}
+          updateFactory={this.addFactory} // Possibly change keyName ?
+        />
+
         <Dialog
           open={this.props.dialogOpen}
           onClose={this.props.handleClose} // <=== Probable not needed ===>//
@@ -122,7 +152,7 @@ class CreateNewFactory extends Component {
               handleChildrenInput={this.handleChildrenInput}
               handleLowerBound={this.handleLowerBound}
               handleUpperBound={this.handleUpperBound}
-              currentState={this.state}
+              validationValues={this.state}
             />
           </DialogContent>
           <DialogActions>
@@ -131,7 +161,7 @@ class CreateNewFactory extends Component {
             </Button>
             <Button
               onClick={() => {
-                this.addFactory()
+                this.addFactory('addMain')
               }}
               color='primary'
             >
@@ -143,4 +173,4 @@ class CreateNewFactory extends Component {
     )
   }
 }
-export default CreateNewFactory
+export default Root
