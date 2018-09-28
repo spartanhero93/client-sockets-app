@@ -9,22 +9,18 @@ import DialogContentText from '@material-ui/core/DialogContentText'
 import DialogTitle from '@material-ui/core/DialogTitle'
 import Button from '@material-ui/core/Button'
 
-// import SubMenu from './SubMenu'
+import TextFields from '../TextFields'
 
 class FactoryMenu extends Component {
   state = {
-    subMenuOpen: false,
-    newName: '',
-    newChildrenAmount: 0
+    subMenuOpen: false
   }
-
   handleSubMenuOpen = () => {
     this.setState({ subMenuOpen: true })
   }
   handleSubMenuClose = () => {
     this.setState({ subMenuOpen: false })
   }
-
   render () {
     const {
       item,
@@ -33,6 +29,8 @@ class FactoryMenu extends Component {
       handleClose,
       removeFactory
     } = this.props
+
+    console.log(item)
     return (
       <div>
         <Menu
@@ -41,7 +39,7 @@ class FactoryMenu extends Component {
           open={Boolean(anchor)}
           onClose={handleClose}
         >
-          {console.log('factory menu Component', item)}
+          {/* {console.log('factory menu Component', item)} */}
           <MenuItem
             onClick={() => {
               removeFactory(item._id)
@@ -58,12 +56,6 @@ class FactoryMenu extends Component {
           >
             Update
           </MenuItem>
-          {/* <SubMenu
-          item={item}
-          open={this.state.subMenuOpen}
-          handleSubMenuClose={this.handleSubMenuClose}
-          updateFactory={updateFactory}
-        /> */}
         </Menu>
         <Dialog
           open={this.state.subMenuOpen}
@@ -75,15 +67,7 @@ class FactoryMenu extends Component {
             {/* <DialogContentText>
               Enter a name, amount of children, upperBound, and lowerBound
             </DialogContentText> */}
-            <TextField
-              autoFocus
-              margin='dense'
-              id='name'
-              label='Name'
-              type='text'
-              fullWidth
-              // onChange={this.handleTextInput}
-            />
+            <TextFields />
           </DialogContent>
           <DialogActions>
             <Button color='primary'>
@@ -98,5 +82,4 @@ class FactoryMenu extends Component {
     )
   }
 }
-
 export default FactoryMenu

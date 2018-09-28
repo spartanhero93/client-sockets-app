@@ -2,9 +2,8 @@ import React, { Component } from 'react'
 import styled from 'styled-components'
 import { withStyles } from '@material-ui/core/styles'
 import Button from '@material-ui/core/Button'
-import socket from '../../socket'
+import socket from '../socket'
 import FactoryMenu from './FactoryMenu'
-
 const styles = theme => ({
   button: {
     margin: theme.spacing.unit
@@ -13,30 +12,24 @@ const styles = theme => ({
     display: 'none'
   }
 })
-
 class FactoryGeneration extends Component {
   state = {
     anchor: null,
     textInput: '',
     currentFactory: {}
   }
-
   handleClick = event => {
     this.setState({ anchor: event.currentTarget })
   }
-
   handleClose = () => {
     this.setState({ anchor: null })
   }
-
   currentFactory = currentFactory => {
     this.setState({ currentFactory })
   }
-
   removeFactory = id => {
     socket.emit('removeFactory', id)
   }
-
   updateFactory = _id => {
     const newChanges = {
       name: this.state.textInput
@@ -44,11 +37,9 @@ class FactoryGeneration extends Component {
     const newFactory = Object.assign({}, this.state.currentFactory)
     socket.emit('updateFactory', newFactory)
   }
-
   render () {
     const { factories, classes } = this.props
-    console.log('Factory generator component: ', this.state.currentFactory)
-
+    // console.log('Factory generator component: ', this.state.currentFactory)
     return (
       /**
       * React.Fragment added to prevent the FactoryMenu
@@ -97,7 +88,6 @@ class FactoryGeneration extends Component {
     )
   }
 }
-
 const Wrapper = styled.div`
   text-align:left;
 
@@ -108,5 +98,4 @@ const Wrapper = styled.div`
     }
   }
 `
-
 export default withStyles(styles)(FactoryGeneration)
