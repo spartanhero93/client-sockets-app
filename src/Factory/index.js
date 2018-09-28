@@ -3,17 +3,18 @@ import Button from '@material-ui/core/Button'
 import Dialog from '@material-ui/core/Dialog'
 import DialogActions from '@material-ui/core/DialogActions'
 import DialogContent from '@material-ui/core/DialogContent'
-import DialogContentText from '@material-ui/core/DialogContentText'
 import DialogTitle from '@material-ui/core/DialogTitle'
 
-import { generateRandomChildren, isFactoryReady } from './helpers'
+import { generateRandomChildren } from './helpers'
 import socket from '../socket'
 import FactoryMapper from './FactoryMapper'
 import TextFields from './TextFields'
+import styled from 'styled-components'
 
 class Root extends Component {
   state = {
     currentText: '',
+    isNameValidated: true,
     numberOfChildren: 0,
     isNumOfChildrenValid: true,
     lowerBound: 0,
@@ -22,9 +23,18 @@ class Root extends Component {
     isUpperBoundValid: true
   }
   handleTextInput = event => {
-    this.setState({
-      currentText: event.target.value
-    })
+    if (event.target.value.length > 20) {
+      this.setState({
+        isNameValidated: false,
+        currentText: event.target.value.trim()
+      })
+    } else {
+      console.log(event.target.value)
+      this.setState({
+        currentText: event.target.value.trim(),
+        isNameValidated: true
+      })
+    }
   }
 
   handleChildrenInput = event => {
@@ -73,14 +83,16 @@ class Root extends Component {
       numberOfChildren,
       isNumOfChildrenValid,
       isLowerBoundValid,
-      isUpperBoundValid
+      isUpperBoundValid,
+      isNameValidated
     } = this.state
 
     if (
       !isLowerBoundValid ||
       !isUpperBoundValid ||
       !isNumOfChildrenValid ||
-      !currentText
+      currentText.length <= 0 ||
+      !isNameValidated
     ) {
       alert('Please check your values')
       this.setState({
@@ -95,8 +107,7 @@ class Root extends Component {
         lowerBound,
         upperBound
       )
-
-      if (hubType == 'addMain') {
+      if (hubType === 'addMain') {
         socket.emit('addFactory', {
           name: this.state.currentText,
           numberOfChildren,
@@ -104,7 +115,7 @@ class Root extends Component {
           lowerBound,
           children: newChildren
         })
-      } else if (hubType == 'updateHub') {
+      } else if (hubType === 'updateHub') {
         socket.emit('updateFactory', {
           name: this.state.currentText,
           numberOfChildren,
@@ -114,7 +125,6 @@ class Root extends Component {
           _id
         })
       }
-
       this.setState({
         numberOfChildren: 0,
         upperBound: 10000,
@@ -127,26 +137,24 @@ class Root extends Component {
   render () {
     return (
       <div>
-        <FactoryMapper
-          factories={this.props.factories}
-          handleTextInput={this.handleTextInput}
-          handleChildrenInput={this.handleChildrenInput}
-          handleLowerBound={this.handleLowerBound}
-          handleUpperBound={this.handleUpperBound}
-          validationValues={this.state}
-          updateFactory={this.addFactory} // Possibly change keyName ?
-        />
-
+        <Container>
+          <FactoryMapper
+            factories={this.props.factories}
+            handleTextInput={this.handleTextInput}
+            handleChildrenInput={this.handleChildrenInput}
+            handleLowerBound={this.handleLowerBound}
+            handleUpperBound={this.handleUpperBound}
+            validationValues={this.state}
+            updateFactory={this.addFactory}
+          />
+        </Container>
         <Dialog
           open={this.props.dialogOpen}
-          onClose={this.props.handleClose} // <=== Probable not needed ===>//
+          onClose={this.props.handleClose}
           aria-labelledby='form-dialog-title'
         >
           <DialogTitle id='form-dialog-title'>Create a new Factory</DialogTitle>
           <DialogContent>
-            <DialogContentText>
-              Enter a name, amount of children, upperBound, and lowerBound
-            </DialogContentText>
             <TextFields
               handleTextInput={this.handleTextInput}
               handleChildrenInput={this.handleChildrenInput}
@@ -156,14 +164,19 @@ class Root extends Component {
             />
           </DialogContent>
           <DialogActions>
-            <Button onClick={this.props.handleClose} color='primary'>
+            <Button
+              onClick={this.props.handleClose}
+              variant='outlined'
+              color='secondary'
+            >
               Cancel
             </Button>
             <Button
               onClick={() => {
                 this.addFactory('addMain')
               }}
-              color='primary'
+              variant='outlined'
+              color='secondary'
             >
               Submit
             </Button>
@@ -173,4 +186,8 @@ class Root extends Component {
     )
   }
 }
+
+const Container = styled.div`
+`
+
 export default Root

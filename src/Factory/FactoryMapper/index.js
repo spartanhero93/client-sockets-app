@@ -4,6 +4,7 @@ import { withStyles } from '@material-ui/core/styles'
 import Button from '@material-ui/core/Button'
 import socket from '../../socket'
 import UpdateCurrentFactory from './UpdateCurrentFactory'
+
 const styles = theme => ({
   button: {
     margin: theme.spacing.unit
@@ -12,6 +13,7 @@ const styles = theme => ({
     display: 'none'
   }
 })
+
 class FactoryMapper extends Component {
   state = {
     anchor: null,
@@ -42,7 +44,6 @@ class FactoryMapper extends Component {
       validationValues,
       updateFactory
     } = this.props
-    // console.log('Factory generator component: ', this.state.currentFactory)
     return (
       /**
       * React.Fragment added to prevent the FactoryMenu
@@ -50,19 +51,26 @@ class FactoryMapper extends Component {
       */
       (
         <Wrapper>
-          {factories.map((item, index) => (
+          {factories.map(item => (
             <React.Fragment key={item._id}>
-              <div onClick={() => this.currentFactory(item)}>
+              <div>
                 <ul>
                   <li>
                     <div>
                       {item.name}
+                      {/** Button Numbers is a styled-component */}
+                      <BoundNumbers>
+                        {item.lowerBound} : {item.upperBound}
+                      </BoundNumbers>
                       <Button
                         aria-owns={this.state.anchor ? 'simple-menu' : null}
                         aria-haspopup='true'
-                        onClick={this.handleClick}
+                        onClick={event => {
+                          this.handleClick(event)
+                          this.currentFactory(item)
+                        }}
                         variant='outlined'
-                        color='primary'
+                        color='secondary'
                         className={classes.button}
                       >
                         Modify
@@ -97,14 +105,24 @@ class FactoryMapper extends Component {
     )
   }
 }
+
+/** Styled Components */
+
 const Wrapper = styled.div`
   text-align:left;
-
   ul {
-    border: solid 2px;
+    list-style: none;
     li {
       padding-left: 1rem;
     }
   }
 `
+const BoundNumbers = styled.span`
+  margin: 0 1rem;
+  background: #404347;
+  border-radius: 1rem;
+  padding: .1rem .8rem;
+  color: white;
+`
+
 export default withStyles(styles)(FactoryMapper)

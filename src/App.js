@@ -1,8 +1,8 @@
 import React, { Component } from 'react'
 import styled from 'styled-components'
-import Button from '@material-ui/core/Button'
 
 import socket from './socket'
+import Header from './Components/Header'
 import Root from './Factory'
 
 class App extends Component {
@@ -25,13 +25,14 @@ class App extends Component {
       this.setState({ factories: [...this.state.factories, response] })
     })
     socket.on('updateFactory', response => {
-      const allFactories = this.state.factories
+      const allFactories = [...this.state.factories]
+      allFactories.splice(
+        allFactories.findIndex(factory => factory._id === response._id),
+        1,
+        response
+      )
       this.setState({
-        factories: allFactories.splice(
-          allFactories.findIndex(target => target._id === response._id),
-          1,
-          response
-        )
+        factories: allFactories
       })
     })
     socket.on('Error', response => console.log(response))
@@ -44,26 +45,22 @@ class App extends Component {
   }
   render () {
     return (
-      <Wrapper>
-        <Button
-          onClick={this.handleClickOpen}
-          variant='outlined'
-          color='primary'
-          // className={classes.button}
-        >
-          New Factory
-        </Button>
-        <Root
-          dialogOpen={this.state.dialogOpen}
-          handleClose={this.handleClose}
-          factories={this.state.factories}
-        />
-      </Wrapper>
+      <div>
+        <Header handleClickOpen={this.handleClickOpen} />
+        <Container>
+          <Root
+            dialogOpen={this.state.dialogOpen}
+            handleClose={this.handleClose}
+            factories={this.state.factories}
+          />
+        </Container>
+      </div>
     )
   }
 }
-const Wrapper = styled.div`
-  margin: 0 8rem;
+const Container = styled.div`
+  margin: 0 3rem;
+  border-left: 2px dashed;
 
   @media(max-width: 900px) {
     margin: 0;

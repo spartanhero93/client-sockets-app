@@ -1,29 +1,31 @@
 import React, { Component } from 'react'
 import Menu from '@material-ui/core/Menu'
 import MenuItem from '@material-ui/core/MenuItem'
-import TextField from '@material-ui/core/TextField'
 import Dialog from '@material-ui/core/Dialog'
 import DialogActions from '@material-ui/core/DialogActions'
 import DialogContent from '@material-ui/core/DialogContent'
-import DialogContentText from '@material-ui/core/DialogContentText'
 import DialogTitle from '@material-ui/core/DialogTitle'
 import Button from '@material-ui/core/Button'
+import { withStyles } from '@material-ui/core/styles'
 
 import TextFields from '../../TextFields'
 
+const styles = theme => ({
+  button: {
+    margin: theme.spacing.unit
+  },
+  input: {
+    display: 'none'
+  }
+})
+
 class UpdateCurrentFactory extends Component {
   state = {
-    subMenuOpen: false,
-    currentFactory: {}
-  }
-
-  componentWillReceiveProps (props) {
-    const incomingFactory = Object.assign(this.state.currentFactory, props.item)
-    this.setState({ currentFactory: incomingFactory })
+    subMenuOpen: false
   }
 
   handleNewFactory = hubType => {
-    this.props.updateFactory(hubType, this.state.currentFactory._id)
+    this.props.updateFactory(hubType, this.props.item._id)
   }
 
   handleSubMenuOpen = () => {
@@ -76,27 +78,28 @@ class UpdateCurrentFactory extends Component {
         >
           <DialogTitle id='form-dialog-title'>{`Modify the values of "${item.name}"`}</DialogTitle>
           <DialogContent>
-            {/* <DialogContentText>
-              Enter a name, amount of children, upperBound, and lowerBound
-            </DialogContentText> */}
             <TextFields
               validationValues={validationValues}
               handleTextInput={handleTextInput}
               handleChildrenInput={handleChildrenInput}
               handleLowerBound={handleLowerBound}
               handleUpperBound={handleUpperBound}
-              item={item}
             />
           </DialogContent>
           <DialogActions>
-            <Button color='primary'>
+            <Button
+              variant='outlined'
+              color='secondary'
+              onClick={this.handleSubMenuClose}
+            >
               Cancel
             </Button>
             <Button
-              color='primary'
+              variant='outlined'
+              color='secondary'
               onClick={() => {
-                this.handleSubMenuClose()
                 this.handleNewFactory('updateHub')
+                this.handleSubMenuClose()
               }}
             >
               Submit
@@ -107,4 +110,4 @@ class UpdateCurrentFactory extends Component {
     )
   }
 }
-export default UpdateCurrentFactory
+export default withStyles(styles)(UpdateCurrentFactory)
