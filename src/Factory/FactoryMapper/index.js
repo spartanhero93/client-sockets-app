@@ -57,8 +57,8 @@ class FactoryMapper extends Component {
                 <ul>
                   <li>
                     <div>
-                      {item.name}
-                      {/** Button Numbers is a styled-component */}
+                      - {item.name}
+                      {/** BoundNumbers is a styled-component */}
                       <BoundNumbers>
                         {item.lowerBound} : {item.upperBound}
                       </BoundNumbers>
@@ -78,7 +78,7 @@ class FactoryMapper extends Component {
                     </div>
                     <ul>
                       {item.children.map((item, index) => (
-                        <li key={index}>{item}</li>
+                        <li key={index}>-- {item}</li>
                       ))}
                     </ul>
                   </li>

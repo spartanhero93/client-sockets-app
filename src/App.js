@@ -10,6 +10,7 @@ class App extends Component {
     factories: [],
     dialogOpen: false
   }
+  /** Setting up the client-sockets for instructions from the Server */
   componentWillMount () {
     socket.emit('allFactories')
     socket.on('allFactories', factories => {
@@ -37,12 +38,15 @@ class App extends Component {
     })
     socket.on('Error', response => console.log(response))
   }
+
+  /** These handlers are passed down as props to other components to avoid code duplication */
   handleClickOpen = () => {
     this.setState({ dialogOpen: true })
   }
   handleClose = () => {
     this.setState({ dialogOpen: false })
   }
+
   render () {
     return (
       <div>
@@ -58,12 +62,13 @@ class App extends Component {
     )
   }
 }
+
+/** Styling using styled-components */
 const Container = styled.div`
   margin: 0 3rem;
-  border-left: 2px dashed;
 
   @media(max-width: 900px) {
-    margin: 0;
+    margin: 0 1rem;
   }
 `
 export default App

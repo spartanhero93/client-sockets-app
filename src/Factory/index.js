@@ -188,6 +188,7 @@ class Root extends Component {
 }
 
 const Container = styled.div`
+  border-left: 2px dashed;
 `
 
 export default Root
