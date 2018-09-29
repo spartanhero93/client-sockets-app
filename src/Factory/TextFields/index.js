@@ -28,6 +28,7 @@ const TextFields = props => {
         inputProps={{
           max: 20
         }}
+        value={validationValues.name}
       />
       <TextField
         autoFocus
@@ -53,7 +54,7 @@ const TextFields = props => {
         label={
           validationValues.isLowerBoundValid
             ? 'LowerBound'
-            : `Value must be at least 0 and less than ${validationValues.upperBound}`
+            : `Value must be at least 0 and at most ${validationValues.upperBound}`
         }
         id='standard-number'
         margin='normal'
@@ -76,7 +77,7 @@ const TextFields = props => {
         label={
           validationValues.isUpperBoundValid
             ? 'UpperBound'
-            : `value must be higher than ${validationValues.lowerBound} and less than 10000`
+            : `value must be at least ${validationValues.lowerBound} and less than 10000`
         }
         id='standard-number'
         margin='normal'
