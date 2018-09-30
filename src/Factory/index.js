@@ -23,7 +23,7 @@ class Root extends Component {
     isUpperBoundValid: true
   }
 
-  /** Using conditional statements to check incoming text values */
+  /** Using conditional statements to validate incoming values */
   handleTextInput = event => {
     event.target.value.length > 20
       ? this.setState({
@@ -35,7 +35,6 @@ class Root extends Component {
         isNameValidated: true
       })
   }
-
   handleChildrenInput = event => {
     let currentAmount = event.target.value.replace(/^0+/, '')
     if (currentAmount > 15 || currentAmount < 0) {
@@ -92,7 +91,7 @@ class Root extends Component {
       isUpperBoundValid,
       isNameValidated
     } = this.state
-    /** Very large way of checking inputs */
+    /** Very large way of checking state */
     if (
       (!isLowerBoundValid ||
         !isUpperBoundValid ||
