@@ -95,7 +95,7 @@ class Root extends Component {
       isUpperBoundValid,
       isNameValidated
     } = this.state
-    /** Very large way of checking inputs */
+    /** Validating state */
     if (
       currentText.length <= 0 ||
       !isNumOfChildrenValid ||
