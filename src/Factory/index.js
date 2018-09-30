@@ -23,7 +23,7 @@ class Root extends Component {
     isUpperBoundValid: true
   }
 
-  /** Using conditional statements to validate incoming values */
+  /** Using conditional statements to check incoming text values */
   handleTextInput = event => {
     event.target.value.length > 20
       ? this.setState({
@@ -35,6 +35,7 @@ class Root extends Component {
         isNameValidated: true
       })
   }
+
   handleChildrenInput = event => {
     let currentAmount = event.target.value.replace(/^0+/, '')
     if (currentAmount > 15 || currentAmount < 0) {
@@ -50,9 +51,12 @@ class Root extends Component {
     }
   }
   handleLowerBound = event => {
-    let currentAmount = Number(event.target.value.replace(/^0+/, ''))
+    let currentAmount = event.target.value.replace(/^0+/, '')
     if (currentAmount < 0 || currentAmount > this.state.upperBound * 1) {
-      return this.setState({ isLowerBoundValid: false })
+      return this.setState({
+        isLowerBoundValid: false,
+        lowerBound: currentAmount
+      })
     } else {
       this.setState({
         lowerBound: currentAmount,
@@ -62,11 +66,11 @@ class Root extends Component {
     }
   }
   handleUpperBound = event => {
-    let currentAmount = Number(event.target.value.replace(/^0+/, ''))
+    let currentAmount = event.target.value.replace(/^0+/, '')
     if (
       currentAmount > 10000 ||
       currentAmount < 0 ||
-      currentAmount < this.state.lowerBound
+      currentAmount < this.state.lowerBound * 1
     ) {
       return this.setState({
         isUpperBoundValid: false,
@@ -91,21 +95,23 @@ class Root extends Component {
       isUpperBoundValid,
       isNameValidated
     } = this.state
-    /** Very large way of checking state */
+    /** Very large way of checking inputs */
     if (
-      (!isLowerBoundValid ||
-        !isUpperBoundValid ||
-        !isNumOfChildrenValid ||
-        currentText.length <= 0 ||
-        !isNameValidated ||
-        !upperBound, !lowerBound)
+      currentText.length <= 0 ||
+      !isNumOfChildrenValid ||
+      numberOfChildren === '' ||
+      currentText.length > 20 ||
+      upperBound === '' ||
+      lowerBound === '' ||
+      !isLowerBoundValid ||
+      !isUpperBoundValid ||
+      !isNameValidated
     ) {
       alert('Please check your values')
       this.setState({
         numberOfChildren: 0,
         upperBound: 10000,
-        lowerBound: 0,
-        children: []
+        lowerBound: 0
       })
     } else {
       const newChildren = generateRandomChildren(
@@ -113,6 +119,7 @@ class Root extends Component {
         lowerBound,
         upperBound
       )
+
       if (hubType === 'addMain') {
         socket.emit('addFactory', {
           name: this.state.currentText,
@@ -134,8 +141,7 @@ class Root extends Component {
       this.setState({
         numberOfChildren: 0,
         upperBound: 10000,
-        lowerBound: 0,
-        children: []
+        lowerBound: 0
       })
       this.props.handleClose()
     }

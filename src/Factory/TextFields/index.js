@@ -65,12 +65,9 @@ const TextFields = props => {
         InputLabelProps={{
           shrink: true
         }}
-        inputProps={{
-          min: 0,
-          max: validationValues.upperBound,
-          step: 1
-        }}
-        placeholder='0'
+        // inputProps={{
+        //   max: validationValues.upperBound
+        // }}
       />
       <TextField
         error={!validationValues.isUpperBoundValid}
@@ -88,12 +85,11 @@ const TextFields = props => {
         InputLabelProps={{
           shrink: true
         }}
-        inputProps={{
-          min: validationValues.lowerBound,
-          max: 10000,
-          step: 1
-        }}
-        placeholder='10000'
+        // inputProps={{
+        //   min: validationValues.lowerBound,
+        //   max: 10000,
+        //   step: 1
+        // }}
       />
     </React.Fragment>
   )
